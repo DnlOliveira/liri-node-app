@@ -38,26 +38,37 @@ var liri = {
 		});//client.get
 	},//tweets function
 
-	songs: function() { 
-		Spotify.search({ type: 'track', query: 'dancing in the moonlight', limit: 1 }, function(error, data) {
+	//function to search for songs
+	songs: function(title) {
+		Spotify.search({ type: 'track', query: title, limit: 1 }, function(error, data) {
     	if (!error) {
-    		console.log(JSON.stringify(data.items, null, 4));
+				//views all data returned
+    		// console.log(JSON.stringify(data, null, 4));
 
     		var artistName = data.tracks.items[0].album.artists[0].name;
     		var songName = data.tracks.items[0].name;
-    		var songLink = data.tracks.items[0].
+    		var songLink = data.tracks.items[0].preview_url;
+				var albumName = data.tracks.items[0].album.name;
 
     		console.log(`
-
-    			`);
+					Artist: 		${artistName}
+					Song Title: ${songName}
+					Album:			${albumName}
+					Song Link:	${songLink}
+					`);
     	}
     	else {
     		console.log('Error occurred: ' + error);
         return;
     	}
-	});//spotify.search
-
+		});//spotify.search
 	},//songs function
+
+	//function to search for movies
+	movies: function(movie) {
+		
+
+	},//movies function
 
 };//liri object
 
@@ -70,22 +81,13 @@ switch (command) {
 		break;
 
 	case "spotify-this-song":
-		liri.songs();
+		liri.songs(info);
 		break;
 
 	case "movie-this":
 		liri.movies();
 		break;
 
-	default: 
+	default:
 		console.log("Error with command");
 }
-
-
-
-
-
-
-
-
-
