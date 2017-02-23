@@ -6,6 +6,8 @@ var keys = require('./keys.js');
 
 var Spotify = require('spotify');
 
+var MovieDB = require('moviedb')('edd19c4e733b1cd3715b4ee5b5926008');
+
 //Var for command line inputs
 var input = process.argv;
 var command = input[2];
@@ -28,8 +30,15 @@ var liri = {
 
 		client.get('statuses/user_timeline', params, function(error, tweets, response){
 			if (!error) {
+				console.log(`
+					------------------------
+					My Tweets:
+				`);
 				for (var i = 0; i < tweets.length; i++) {
-					console.log(`My Tweets:\n ${i+1}: ${tweets[i].text}\n${tweets[i].created_at}`);
+					console.log(`
+						${i+1}:${tweets[i].text}\n${tweets[i].created_at}
+						----------------------
+					`);
 				}
 			}
 			else {
@@ -51,10 +60,14 @@ var liri = {
 				var albumName = data.tracks.items[0].album.name;
 
     		console.log(`
+					---------------------------
+					Spotify:
+
 					Artist: 		${artistName}
 					Song Title: ${songName}
 					Album:			${albumName}
 					Song Link:	${songLink}
+					---------------------------
 					`);
     	}
     	else {
@@ -66,9 +79,24 @@ var liri = {
 
 	//function to search for movies
 	movies: function(movie) {
-		
+		MovieDB.searchMovie({ query: movie }, (err, res) => {
+			if (!err) {
+				var title = res.results[0].original_title;
+				var released = res.results[0].release_date;
+				var rating = res.results[0].popularity;
 
-	},//movies function
+				console.log(`
+					---------------------------
+					MovieDB:
+
+					Title: 				${title}
+					Release Date: ${released}
+					Rating:				${rating}
+					---------------------------
+				`);
+			}
+		});//moviedb search
+	}//movies function
 
 };//liri object
 
@@ -85,7 +113,7 @@ switch (command) {
 		break;
 
 	case "movie-this":
-		liri.movies();
+		liri.movies(info);
 		break;
 
 	default:
